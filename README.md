@@ -35,15 +35,15 @@ after about less than 20_000 training steps the score passes from 1000
 
 well as the chart suggests, the agent is unable to go further than 60-70 because of the lack of information
 
-![ff](./growing_snake_q_learning/Q_values_23_07_19_20_55_15/results.png)
+![growing_q_learnin_img](./growing_snake_q_learning/Q_values_23_07_19_20_55_15/results.png)
 
 ### `growing_snake_deep_q_learning`
 
 the agent is able to learn. after about 80000 steps it reaches highscore of 50-60. but this is not perfect. probably the `hyperparameters` that i've choosed wasn't good enough. and there is `performance` problem which should be fixed. 
 
-the file `state_setting.py` know returns a window of the snake head(25)* + direction of food(4) + direction of snake(4).
+the file `state_setting.py` now returns a window of the snake head(25)* + direction of food(4) + direction of snake(4).
 
-![growing_snake_deep_q_learning](./images/growing_snake_deep_q_learning.png)
+![growing_snake_deep_q_learning_img](./images/growing_snake_deep_q_learning.png)
 
 where:
 - 0: is empty space
