@@ -14,6 +14,7 @@ class SnakeGame:
                  init_snake_length:int,
                  render:bool,
                  growing:bool,
+                 truncate_timeout:int,
                  state_fn) -> None:
         
         assert width % step == 0, (f'increase/decrease the width by {width % step}')
@@ -27,6 +28,7 @@ class SnakeGame:
         self.render=render
         self.state_fn = state_fn
         self.growing = growing
+        self.truncate_timeout = truncate_timeout
         
         self.score = 0 
         self.high_score = 0
@@ -97,12 +99,12 @@ class SnakeGame:
         
         return self.get_state()
 
-    def check_food_pos(self):
+    def __check_food_pos(self):
         return any([(cord[0] == self.food_pos[0] and cord[1] == self.food_pos[1])
                 for cord in self.snake_body])
     
-    def check_truncated(self):
-        if self.n_steps - self.old_n_steps == len(self.snake_body)*150 and self.reward == 0:
+    def __check_truncated(self):
+        if (self.n_steps - self.old_n_steps) > (len(self.snake_body)+1)*self.truncate_timeout:
             self.truncate = True
     
     def get_state(self):
@@ -117,7 +119,10 @@ class SnakeGame:
         self.done = False
         self.n_steps += 1
         self.change_to = action
-        self.check_truncated()
+        self.__check_truncated()
+        
+        if self.truncate:
+            self.reward = -10
 
         # choose direction based on action
         if self.change_to == 0 and self.direction == 3:
@@ -147,13 +152,6 @@ class SnakeGame:
         if self.direction == 4:
             self.snake_pos[0] += self.step
         
-        if self.truncate:
-            self.reward = -10
-        
-        # if self.n_steps > (len(self.snake_body)+1)*75:
-        #     self.reward = -10
-        #     self.done = True
-        
         # Snake body growing mechanism
         self.snake_body.insert(0, tuple(self.snake_pos))
             
@@ -173,7 +171,7 @@ class SnakeGame:
             self.food_pos = (np.random.choice(self.x_range[:-1]), np.random.choice(self.y_range[:-1]))
             self.food_spawn = True
     
-        while self.check_food_pos():
+        while self.__check_food_pos():
             self.food_pos = (np.random.choice(self.x_range[:-1]), np.random.choice(self.y_range[:-1]))
 
         # GFX

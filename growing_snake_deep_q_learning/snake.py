@@ -14,6 +14,7 @@ class SnakeGame:
                  init_snake_length:int,
                  render:bool,
                  growing:bool,
+                 truncate_timeout:int,
                  state_fn) -> None:
         
         assert width % step == 0, (f'increase/decrease the width by {width % step}')
@@ -27,6 +28,7 @@ class SnakeGame:
         self.render=render
         self.state_fn = state_fn
         self.growing = growing
+        self.truncate_timeout = truncate_timeout
         
         self.score = 0 
         self.high_score = 0
@@ -102,7 +104,7 @@ class SnakeGame:
                 for cord in self.snake_body])
     
     def __check_truncated(self):
-        if (self.n_steps - self.old_n_steps) > (len(self.snake_body)+1)*10:
+        if (self.n_steps - self.old_n_steps) > (len(self.snake_body)+1)*self.truncate_timeout:
             self.truncate = True
     
     def get_state(self):

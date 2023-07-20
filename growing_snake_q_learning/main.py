@@ -10,7 +10,7 @@ save_dir = '.\\Q_values_' + get_time() + '\\'
 if not os.path.exists(save_dir):
     os.mkdir(save_dir)
 
-env = SnakeGame(50*12, 50*12, 240, 25 , 3, True, True, state_fn=state_growing_return)
+env = SnakeGame(50*12, 50*12, 240, 25 , 3, True, True, 100, state_fn=state_growing_return)
 
 agent = Agent(None, n_actions=3, lr=0.001)
 

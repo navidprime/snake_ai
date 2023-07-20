@@ -4,7 +4,7 @@ from agent import Agent
 import tensorflow as tf
 
 # i've removed unncessary files on the saved q values
-env = SnakeGame(25*25, 25*25, 60, 25, 3, True, True, state_fn=state_growing_return)
+env = SnakeGame(25*25, 25*25, 60, 25, 3, True, True, 50, state_fn=state_growing_return)
 
 agent = Agent(n_actions=3)
 agent.test_mode = True

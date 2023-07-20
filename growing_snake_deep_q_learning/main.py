@@ -11,7 +11,7 @@ save_dir = '.\\saved_models' + get_time() + '\\'
 if not os.path.exists(save_dir):
     os.mkdir(save_dir)
 
-env = SnakeGame(15*40, 15*40, 999, 15 , 4, True, True, state_fn=state_growing_return)
+env = SnakeGame(15*40, 15*40, 999, 15 , 4, True, True, 50, state_fn=state_growing_return)
 
 agent = Agent(n_actions=3, n_inputs=25+4+4, lr=0.0001, epsilonl=250)
 
