@@ -8,7 +8,7 @@ env = SnakeGame(25*25, 25*25, 60, 25, 3, True, True, state_fn=state_growing_retu
 
 agent = Agent(n_actions=3)
 agent.test_mode = True
-agent.model = tf.keras.models.load_model('.\\saved_models23_07_20_13_00_55\\model_23_07_20_13_41_56')
+agent.model = tf.keras.models.load_model('./saved_models23_07_20_13_00_55/model_23_07_20_13_41_56')
 
 episodes = 10_000
 
