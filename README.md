@@ -39,7 +39,11 @@ well as the chart suggests, the agent is unable to go further than 60-70 because
 
 ### `growing_snake_deep_q_learning`
 
-the agent is able to learn. after about 80000 steps it reaches highscore of 50-60. but this is not perfect. probably the `hyperparameters` that i've choosed wasn't good enough. and there is `performance` problem which should be fixed. 
+well, the algorithm works fine if i've trained it more, (+ wider VISION_SIZE) probably it could master the game.
+
+there is agent_cpu.py and agent_gpu.py. if you have a gpu access for tensorflow you probably wana use agent_gpu. if not you should use agent_cpu (the only thing that makes computations very expensive in agent_gpu is `tf.queue.RandomShuffleQueue`. for some reasons `tf.queue.RandomShuffleQueue` uses a lot resources in cpu).
+
+and note that while useing snake.py the width and height should be equal. otherwise the error will raise from state_setting.py
 
 the file `state_setting.py` know returns a window of the snake head(25)* + direction of food(4) + direction of snake(4).
 
@@ -51,3 +55,5 @@ where:
 - 1: is snake head
 - 2: is snake body
 - 3: is walls
+
+![growing_snake_deep_q_learning_results](growing_snake_deep_q_learning/saved_models23_07_21_09_32_27/results.png)
