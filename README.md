@@ -2,9 +2,7 @@
 
 ## running files
 
-just cd to the directory you want. and run `python ./main.py` if you want to train a new agent.
-
-else run `python ./testing.py` for testing pretrained agent
+just cd to the directory you want. and run `python ./main.py`(uncomment or comment the train and test function)
 
 ## info
 
@@ -15,19 +13,17 @@ in each directory:
 
 - `helper.py`: the helper functions(e.g. for plotting the results)
 
-- `main.py`: used to train the agent and save the weights(q values) on directories that start with `Q_values`
+- `main.py`: has 2 functions train and test
 
 - `snake.py`: the game(enviroment). i've implemented it, and i tried to make it like gym enviroments
 
 - `state_setting.py`: the function used to implement the inputs that the agent will receive from enviroment (that makes the game more flexible)
 
-- `testing.py`: used to test the agent. which starts by loading the saved weights/q values and testing it. (in new changes both testing process and training process are in main.py in separate functions)
-
 ## directories
 
 ### `no_growing_snake_q_learning`
 
-after about less than 20_000 training steps the score passes from 1000
+after about less than 20_000 training steps the score passes from 1000 (Note the q values has been replaced so it might now get stuck in some places)
 
 ![no_growing_q_learning_img](./images/no_growing_q_learning.png)
 
@@ -57,10 +53,5 @@ where:
 - 3: is walls
 
 ![growing_snake_deep_q_learning_results](growing_snake_deep_q_learning/saved_models_23_07_27/results.png)
-
-#### changes
-**23-07-27** : 
-
-now training and testing is in the main.py file.
 
 evaluate_agent.py this is used for testing the agent with several hyperparameters in cartpole enviroment. the AdamW and xaiver init method worked well(learned faster)
