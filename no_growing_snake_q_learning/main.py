@@ -1,67 +1,108 @@
+import os
 import numpy as np
 from snake import SnakeGame
 from agent import Agent
-import os
 from state_setting import state_no_growing_return
-from helper import plot, get_time, write_q_values, save_figure
+from helper import *
 
-save_dir = '.\\Q_values_' + get_time() + '\\'
+width = 60*20
+height = 40*20
+step = 20
+fps_on_train = 360
+fps_on_test = 120
+truncate_timeout = 150
+
+save_dir = './Q_values_' + get_time()[:8] + '/'
 
 if not os.path.exists(save_dir):
     os.mkdir(save_dir)
 
-env = SnakeGame(50*12, 50*12, 240, 50 , 1, True, False, 75, state_fn=state_no_growing_return)
+def train():
+    global q_values_path
+    
+    env = SnakeGame(width, height, fps_on_train, step , 1, True, False, truncate_timeout, state_fn=state_no_growing_return)
 
-agent = Agent(None, n_actions=3, lr=0.001)
+    agent = Agent(n_actions=3, epsilon_length=170, lr=.01)
 
-high_scores = []
-mean_rewards = []
-scores = []
-rewards = []
-diff_states = []
+    scores_each_episode = []
 
-episodes = 100_000
+    episodes = 100_000
 
-s = env.reset()
-
-for i in range(episodes):
-    if i%20_000 == 0 and i != 0:
-        print(1-(i/episodes), 'remaining')
+    s = env.reset()
+    
+    for episode in range(episodes):
+        if episode % 1000 == 0 and episode != 0:
+            print('-'*50)
+            
+            print(f'episode: {episode}')
+            
+            print(f'length of states: {len(agent.q_values)}')
+            
+            print(f'n_rand_preds: {agent.n_rand_preds}')
+            
+            print(f'epsilon: {agent.epsilon}, epsilon_length: {agent.epsilon_length}')
         
-        save_path = save_dir+'Qvalues_'+get_time()+'.csv'
-        write_q_values(agent.table, save_path)
+        a = agent(s)
         
-        print('saved q values to ', save_path)
+        s_, r, done, truncate = env.play_step(a)
         
-    a = agent(s)
-    
-    s_prime, reward, done, truncate = env.play_step(a)
-    
-    agent.update_table(s, a, s_prime, reward)
-    
-    s = s_prime
-    
-    rewards.append(reward)
-    scores.append(env.score)
-    
-    if done or truncate:
-        mean_rewards.append(sum(rewards)/len(rewards))
-        high_scores.append(max(scores))
-        diff_states.append(len(agent.table)/10)
+        agent.update_q_values(s, a, s_, r)
         
-        scores = []
-        rewards = []
+        s = s_
         
-        plot(mean_rewards, high_scores, diff_states, x_label='n_games',
-             y_label='meanRewards', z_label='highScores', q_label='diffStates/10')
-        
-        s = env.reset()
+        if done or truncate:
+            scores_each_episode.append(env.score)
+            
+            agent.epsilon += 1
+            
+            plot(np.arange(0, len(scores_each_episode)), scores_each_episode, 'n_games', 'high_score')
+            
+            s = env.reset()
+            
+    print('Done training.')
     
+    q_values_path = save_dir+'qvalues_'+get_time()+'.csv'
     
-print('Done training')
+    write_q_values(agent.q_values, q_values_path)
+    print('wrote q values.')
+    
+    save_figure(save_dir + 'results.png')
+    close_window()
 
-save_figure(save_dir + 'results.png')
+def test():
+    global q_values_path
+    
+    print('Testing the agent')
+    
+    env = SnakeGame(width, height, fps_on_test, step , 1, True, False, truncate_timeout, state_fn=state_no_growing_return)
 
-save_path = save_dir+'Qvalues_'+get_time()+'_finalsave'+'.csv'
+    agent = Agent(3)
+    agent.test_mode = True
+    
+    agent.q_values = read_q_values(q_values_path)
+    
+    s = env.reset()
+    
+    episodes = 10_000
+    
+    highest_score = 0
 
-write_q_values(agent.table, save_path)
+    for i in range(episodes):
+        a = agent(s)
+        
+        s_prime, reward, done, truncate = env.play_step(a)
+        
+        s = s_prime
+        
+        if done or truncate:
+            if env.score > highest_score:
+                highest_score = env.score
+                
+            s = env.reset()
+    
+    print(f'highest_score: {highest_score}')
+
+if __name__ == '__main__':
+    # train()
+    q_values_path = './Q_values_23_07_27/qvalues_23_07_27_12_18_03.csv'
+    test()

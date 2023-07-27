@@ -1,57 +1,54 @@
 import numpy as np
+import random
 
 class Agent:
     
-    def __init__(self, table, n_actions=None, lr=0.1, gamma=.99, epsilon=.99, epsilon_decay=.001) -> None:
+    def __init__(self, n_actions=None, lr=0.1, gamma=.99, epsilon_length=200) -> None:
         self.lr = lr
         self.gamma = gamma
-        self.epsilon=epsilon
-        self.epsilon_decay = epsilon_decay
+        self.epsilon_length = epsilon_length
+        self.n_actions = n_actions
+        self.epsilon = 0
         self.n_rand_preds = 0
-        self.test_mode = False
-
-        self.table = table
         
-        if type(table) == np.ndarray:
-            self.n_actions = table.shape[-1]
-        else:
-            self.table = dict()
-            self.n_actions = n_actions
+        
+        self.epsilon = 0
+        self.test_mode = False
+        
+        self.q_values = dict()
+    
+    def __get_random_array(self):
+        return np.random.normal(loc=0, scale=.1, size=(3,)).astype('float32')
     
     def predict(self, state):
-        proba = np.random.random()
-        state = tuple(state)
+        random_choice_proba = random.randint(0, self.epsilon_length)
         
-        if self.epsilon > proba and not self.test_mode:
-            self.epsilon -= self.epsilon_decay
+        if (not self.epsilon > random_choice_proba) and (not self.test_mode):
             self.n_rand_preds += 1
-            return np.random.randint(0, self.n_actions if type(self.table) == dict else self.table.shape[-1])
+            return np.random.randint(0, self.n_actions)
         else:
-            if type(self.table.get(state)) == np.ndarray:
-                return np.argmax(self.table[state])
+            state = tuple(state)
+            
+            if state in self.q_values.keys():
+                return np.argmax(self.q_values[state])
             else:
-                self.table[state] = np.zeros((self.n_actions))
                 self.n_rand_preds += 1
+                self.q_values[state] = self.__get_random_array()
+
                 return np.random.randint(0, self.n_actions)
     
     def __call__(self, state):
         return self.predict(state)
     
-    def update_table(self, state, action, new_state, reward):
+    def update_q_values(self, state, action, new_state, reward):
+        state = tuple(state)
+        new_state = tuple(new_state)
         
-        if type(self.table) == np.ndarray:
-            self.table[state, action] = self.table[state, action]\
-+ (self.lr * (reward + (self.gamma * np.max(self.table[new_state])) - self.table[state, action]))
-        else:
-            state = tuple(state)
-            new_state = tuple(new_state)
+        if not state in self.q_values.keys():
+            self.q_values[state] = self.__get_random_array()
             
-            if not type(self.table.get(state)) == np.ndarray:
-                self.table[state] = np.zeros((self.n_actions))
-                
-            if not type(self.table.get(new_state)) == np.ndarray:
-                self.table[new_state] = np.zeros((self.n_actions))
-                
-            self.table[state][action] = self.table[state][action]\
-                + (self.lr * (reward + (self.gamma * np.max(self.table[new_state])) - self.table[state][action]))
-            
+        if not new_state in self.q_values.keys():
+            self.q_values[new_state] = self.__get_random_array()
+        
+        self.q_values[state][action] = self.q_values[state][action] \
+            + (self.lr * (reward + (self.gamma * np.max(self.q_values[new_state])) - self.q_values[state][action]))

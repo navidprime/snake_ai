@@ -87,8 +87,8 @@ class SnakeGame:
         self.done = False
         
         self.n_steps = 0
-        self.score = 0
         self.old_n_steps = 0
+        self.score = 0
 
         if self.render:
             red_surface = self.font.render(self.ranking_text.format(self.high_score, self.score), True, self.colors[1], self.colors[2])
@@ -99,12 +99,18 @@ class SnakeGame:
         
         return self.get_state()
 
+    def __small_reset(self):
+        self.reward = 0
+        self.done = False
+        self.n_steps += 1
+        self.__check_truncated()
+
     def __check_food_pos(self):
         return any([(cord[0] == self.food_pos[0] and cord[1] == self.food_pos[1])
                 for cord in self.snake_body])
     
     def __check_truncated(self):
-        if (self.n_steps - self.old_n_steps) > (len(self.snake_body)+1)*self.truncate_timeout:
+        if (self.n_steps - self.old_n_steps) > (len(self.snake_body)+5)*self.truncate_timeout:
             self.truncate = True
     
     def get_state(self):
@@ -115,11 +121,9 @@ class SnakeGame:
     def play_step(self, action:int):
         # assert action in (0, 1, 2), 'action must be 0(right) 1(left) 2(straight)' # right, left, straight
         
-        self.reward = 0
-        self.done = False
-        self.n_steps += 1
+        self.__small_reset()
+        
         self.change_to = action
-        self.__check_truncated()
         
         if self.truncate:
             self.reward = -10
