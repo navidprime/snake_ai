@@ -21,7 +21,7 @@ in each directory:
 
 - `state_setting.py`: the function used to implement the inputs that the agent will receive from enviroment (that makes the game more flexible)
 
-- `testing.py`: used to test the agent. which starts by loading the saved weights/q values and testing it.
+- `testing.py`: used to test the agent. which starts by loading the saved weights/q values and testing it. (in new changes both testing process and training process are in main.py in separate functions)
 
 ## directories
 
@@ -33,9 +33,9 @@ after about less than 20_000 training steps the score passes from 1000
 
 ### `growing_snake_q_learning`
 
-well as the chart suggests, the agent is unable to go further than 60-70 because of the lack of information
+well as the chart suggests, the agent is unable to go further than 50-60 because of the lack of information. (or maybe tweaking the hyper parameters might help)
 
-![ff](./growing_snake_q_learning/Q_values_23_07_19_20_55_15/results.png)
+![growing_snake_q_learning_chart](./growing_snake_q_learning/Q_values_23_07_26/results.png)
 
 ### `growing_snake_deep_q_learning`
 
