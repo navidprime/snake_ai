@@ -110,7 +110,7 @@ class SnakeGame:
                 for cord in self.snake_body])
     
     def __check_truncated(self):
-        if (self.n_steps - self.old_n_steps) > len(self.snake_body)*2+self.truncate_timeout:
+        if (self.n_steps - self.old_n_steps) > (len(self.snake_body)+5)*self.truncate_timeout:
             self.truncate = True
     
     def get_state(self):
