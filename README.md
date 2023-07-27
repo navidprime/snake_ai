@@ -56,4 +56,11 @@ where:
 - 2: is snake body
 - 3: is walls
 
-![growing_snake_deep_q_learning_results](growing_snake_deep_q_learning/saved_models23_07_21_09_32_27/results.png)
+![growing_snake_deep_q_learning_results](growing_snake_deep_q_learning/saved_models_23_07_27/results.png)
+
+#### changes
+**23-07-27** : 
+
+now training and testing is in the main.py file.
+
+evaluate_agent.py this is used for testing the agent with several hyperparameters in cartpole enviroment. the AdamW and xaiver init method worked well(learned faster)
