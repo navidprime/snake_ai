@@ -32,9 +32,10 @@ def state_growing_return(**kwargs):
     
     x_range_with_bounds =(-999,)*(bounds_length) + kwargs['x_range'] + (-999,)*(bounds_length)
     y_range_with_bounds =(-999,)*(bounds_length) + kwargs['y_range'] + (-999,)*(bounds_length)
-    
+
     image = np.zeros((len(x_range_with_bounds), len(y_range_with_bounds)))
-    
+
+    # TODO: use np.pad than for loops!
     for n in range(bounds_length):
         image[:, n] = 3
         image[:, len(x_range_with_bounds)-n-1] = 3
