@@ -14,10 +14,11 @@ truncate_timeout = 150
 
 save_dir = './Q_values_' + get_time()[:8] + '/'
 
-if not os.path.exists(save_dir):
-    os.mkdir(save_dir)
 
 def train():
+    if not os.path.exists(save_dir):
+        os.mkdir(save_dir)
+    
     global q_values_path
     
     env = SnakeGame(width, height, fps_on_train, step , 1, True, True, truncate_timeout, state_fn=state_growing_return)
@@ -83,7 +84,7 @@ def test():
     
     s = env.reset()
     
-    episodes = 2_000
+    episodes = 10_000
     
     highest_score = 0
 

@@ -1,5 +1,6 @@
-numpy
+numpy<2
 matplotlib
 pygame
-tensorflow
+tensorflow==2.13.1
+keras==2.13.1
 gymnasium
