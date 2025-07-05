@@ -7,18 +7,17 @@ from helper import *
 
 save_dir = './saved_models_' + get_time()[:8] + '/'
 
-if not os.path.exists(save_dir):
-    os.mkdir(save_dir)
-
 width = 40*20
 height = 40*20
 step = 20
 fps_on_train = 360
 fps_on_test = 30
 truncate_timeout = 200
-lr_schduler = lambda n_games, lr: lr if n_games < 300 else lr*tf.exp(-0.01)
+lr_schduler = lambda n_games, lr: lr if n_games < 350 else lr*tf.exp(-0.01)
 
 def train():
+    if not os.path.exists(save_dir):
+        os.mkdir(save_dir)
     global model_save_path
     
     env = SnakeGame(width, height, fps_on_train, step, 4, True, True, truncate_timeout, state_fn=state_growing_return)
@@ -100,6 +99,6 @@ def test():
             s = env.reset()
 
 if __name__ == '__main__':
-    # train()
-    model_save_path = './saved_models_23_07_27/saved_model_23_07_27_11_17_33'
+    train()
+    # model_save_path = './saved_models_23_07_27/saved_model_23_07_27_11_17_33'
     test()
